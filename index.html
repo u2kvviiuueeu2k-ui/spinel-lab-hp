@@ -986,6 +986,13 @@
     <span class="footer-copy">© 2025 Spinel Lab. All rights reserved.</span>
   </footer>
 
+  <!-- Back to Top -->
+  <button id="back-to-top" class="back-to-top" aria-label="トップに戻る">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M9 13V5M4.5 9.5l4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
   <script>
     /* ── Header scroll effect ── */
     const header = document.getElementById('site-header');
@@ -995,8 +1002,10 @@
 
     /* ── Back to Top ── */
     const btt = document.getElementById('back-to-top');
-    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400), { passive: true });
-    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    if (btt) {
+      window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400), { passive: true });
+      btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
 
     /* ── Scroll fade-up (IntersectionObserver) ── */
     const fadeEls = document.querySelectorAll('.fade-up');
@@ -1045,13 +1054,6 @@
     }
     setTimeout(tick, 700);
   </script>
-
-  <!-- Back to Top -->
-  <button id="back-to-top" class="back-to-top" aria-label="トップに戻る">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <path d="M9 13V5M4.5 9.5l4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </button>
 
 <script src="https://chatbot-saas-blue.vercel.app/widget.js?botId=69e9ca7241825788eabc12ff" async></script>
 </body>
