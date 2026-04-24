@@ -573,7 +573,6 @@
 
       .service-detail { padding: 60px 24px; }
       .detail-cta { flex-direction: column; align-items: flex-start; }
-      .company-inner { grid-template-columns: 1fr; gap: 32px; }
 
       .site-footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 12px; }
     }
@@ -641,6 +640,24 @@
       padding: 15px 0;
       letter-spacing: 0.04em;
       line-height: 1.7;
+    }
+
+    /* ── Company mobile ── */
+    @media (max-width: 768px) {
+      .company-section { padding: 52px 20px; }
+      .company-inner { grid-template-columns: 1fr; gap: 28px; }
+      .company-table th {
+        white-space: nowrap;
+        width: auto;
+        padding: 13px 14px 13px 0;
+        font-size: 9px;
+        letter-spacing: 0.1em;
+      }
+      .company-table td { padding: 13px 0; font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .company-table th { font-size: 8px; padding-right: 10px; }
+      .company-table td { font-size: 12px; }
     }
 
     /* ── Back to Top ── */
