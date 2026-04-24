@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spinel Lab — この作業、自動化できますよ。</title>
+  <meta name="description" content="中小企業・地域ビジネス向けの業務改善・自動化サービス。ホームページ制作・SNS運用・業務の仕組み化など。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: oklch(13% 0.025 248);
+      font-family: 'Noto Sans JP', sans-serif;
+      color: oklch(96% 0.008 248);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Scroll fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      height: 68px;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+    }
+    .site-header.scrolled {
+      background: oklch(13% 0.025 248 / 92%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: oklch(100% 0 0 / 8%);
+    }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: oklch(96% 0.008 248);
+      text-decoration: none;
+    }
+
+    /* ── Nav ── */
+    .nav-links {
+      display: flex;
+      gap: 36px;
+    }
+    .nav-link {
+      position: relative;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: oklch(88% 0.008 248);
+      opacity: 0.62;
+      text-decoration: none;
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: oklch(73% 0.19 52);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover { opacity: 1; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: oklch(13% 0.025 248);
+    }
+
+    .hero-dot-grid {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: radial-gradient(oklch(96% 0.008 248 / 5.5%) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    .hero-glow-amber {
+      position: absolute;
+      top: -160px; right: -120px;
+      width: 560px; height: 560px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(73% 0.19 52 / 12%) 0%, transparent 65%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-glow-teal {
+      position: absolute;
+      bottom: -140px; left: -100px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(72% 0.17 178 / 9%) 0%, transparent 65%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-crystal {
+      position: absolute;
+      right: 6%; top: 50%;
+      transform: translateY(-50%);
+      width: min(320px, 28vw);
+      opacity: 0.055;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(80px, 12vh, 140px) 24px 80px;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    /* Tags */
+    .hero-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero-tag {
+      padding: 5px 15px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      color: oklch(60% 0.015 248);
+      border: 1px solid oklch(100% 0 0 / 18%);
+    }
+
+    /* Label row */
+    .hero-label-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+    .hero-rule {
+      width: 52px;
+      height: 1px;
+      background: oklch(96% 0.008 248 / 16%);
+    }
+    .hero-label-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: oklch(60% 0.015 248);
+      font-weight: 600;
+    }
+
+    /* Catchcopy */
+    .hero-catch {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(38px, 5.5vw, 66px);
+      line-height: 1.55;
+      color: oklch(96% 0.008 248);
+      margin-bottom: 28px;
+    }
+
+    /* Typing animation */
+    .typing-word {
+      color: oklch(73% 0.19 52);
+      border-right: 3px solid oklch(73% 0.19 52);
+      padding-right: 2px;
+      animation: cursorBlink 0.65s step-end infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { border-right-color: oklch(73% 0.19 52); }
+      50% { border-right-color: transparent; }
+    }
+    .catch-auto {
+      color: oklch(73% 0.19 52);
+    }
+
+    /* Sub copy */
+    .hero-sub {
+      font-size: clamp(13px, 1.5vw, 16px);
+      font-weight: 300;
+      line-height: 1.9;
+      color: oklch(88% 0.008 248);
+      opacity: 0.72;
+      max-width: 540px;
+      margin-bottom: 56px;
+      letter-spacing: 0.04em;
+    }
+
+    /* CTA row */
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* Primary button */
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: oklch(73% 0.19 52);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: oklch(13% 0.05 42);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: oklch(79% 0.19 52);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px oklch(73% 0.19 52 / 45%);
+    }
+    .btn-primary:active { transform: translateY(-1px); }
+
+    /* Secondary button */
+    .btn-secondary {
+      display: inline-block;
+      padding: 16px 40px;
+      background: transparent;
+      border: 1px solid oklch(100% 0 0 / 25%);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: oklch(88% 0.008 248);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .btn-secondary:hover {
+      border-color: oklch(73% 0.19 52 / 60%);
+      color: oklch(73% 0.19 52);
+      background: oklch(73% 0.19 52 / 6%);
+    }
+
+    /* Bottom gradient bar */
+    .hero-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, oklch(72% 0.17 178), oklch(73% 0.19 52));
+      z-index: 5;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .scroll-hint span {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: oklch(60% 0.015 248);
+      opacity: 0.6;
+    }
+    .scroll-hint-line {
+      width: 1px;
+      height: 24px;
+      background: oklch(73% 0.19 52 / 50%);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.5; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    /* ── Services Section ── */
+    .services-section {
+      padding: clamp(72px, 10vw, 120px) clamp(24px, 6vw, 96px);
+      background: oklch(13% 0.025 248);
+      scroll-margin-top: 68px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .section-label-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .section-rule {
+      width: 40px;
+      height: 1px;
+      background: oklch(96% 0.008 248 / 16%);
+    }
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: oklch(60% 0.015 248);
+      font-weight: 600;
+    }
+    .section-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 3.5vw, 36px);
+      color: oklch(96% 0.008 248);
+      line-height: 1.5;
+    }
+
+    /* Service cards grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .service-card {
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(100% 0 0 / 8%);
+      border-radius: 6px;
+      padding: 32px 28px;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+    }
+    .service-card:hover {
+      border-color: oklch(73% 0.19 52 / 50%);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px oklch(73% 0.19 52 / 12%);
+    }
+
+    .card-icon { margin-bottom: 20px; }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .card-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
+    }
+    .card-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: oklch(96% 0.008 248);
+    }
+    .card-desc {
+      font-size: 13px;
+      line-height: 1.9;
+      color: oklch(60% 0.015 248);
+      white-space: pre-line;
+      letter-spacing: 0.02em;
+      flex: 1;
+    }
+
+    .card-link-row {
+      margin-top: 24px;
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .card-link-rule {
+      width: 20px;
+      height: 1px;
+      background: oklch(73% 0.19 52);
+      transition: width 0.2s;
+    }
+    .card-link-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: oklch(73% 0.19 52);
+      font-weight: 600;
+    }
+    .card-link-row:hover .card-link-rule { width: 32px; }
+
+    /* ── Service Detail Sections ── */
+    .service-detail {
+      padding: clamp(48px, 6vw, 72px) clamp(24px, 6vw, 96px);
+      background: oklch(13% 0.025 248);
+      border-top: 1px solid oklch(100% 0 0 / 6%);
+      scroll-margin-top: 88px;
+    }
+    .service-detail--alt { background: oklch(15% 0.028 248); }
+    .service-detail-inner { max-width: 860px; margin: 0 auto; }
+    .detail-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .detail-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: oklch(73% 0.19 52);
+    }
+    .detail-rule {
+      width: 28px;
+      height: 1px;
+      background: oklch(73% 0.19 52 / 40%);
+    }
+    .detail-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 30px);
+      color: oklch(96% 0.008 248);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .detail-desc {
+      font-size: 14px;
+      line-height: 2.1;
+      color: oklch(68% 0.015 248);
+      margin-bottom: 32px;
+      max-width: 600px;
+      letter-spacing: 0.03em;
+    }
+    .detail-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+    .detail-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: oklch(80% 0.012 248);
+      padding: 11px 15px;
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(100% 0 0 / 7%);
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+    .detail-feature::before {
+      content: '';
+      display: block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: oklch(73% 0.19 52);
+      flex-shrink: 0;
+    }
+    .detail-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Services bottom CTA */
+    .services-cta {
+      text-align: center;
+      margin-top: 72px;
+    }
+    .services-cta-note {
+      font-size: 14px;
+      color: oklch(60% 0.015 248);
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 32px 52px;
+      border-top: 1px solid oklch(100% 0 0 / 8%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: oklch(11% 0.02 248);
+    }
+    .footer-copy {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      color: oklch(60% 0.015 248);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Mobile responsive ── */
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .detail-features { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .site-header { padding: 0 24px; }
+      .nav-links { display: none; }
+
+      .hero-inner { padding: 100px 24px 80px; }
+      .hero-catch { font-size: clamp(32px, 9vw, 52px); }
+      .hero-sub { font-size: 13px; }
+      .hero-crystal { display: none; }
+
+      .cta-row {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        max-width: 320px;
+      }
+      .cta-row .btn-primary,
+      .cta-row .btn-secondary { text-align: center; }
+
+      .hero-tags { gap: 6px; }
+
+      .services-grid { grid-template-columns: 1fr; }
+      .services-section { padding: 72px 24px; }
+
+      .service-detail { padding: 60px 24px; }
+      .detail-cta { flex-direction: column; align-items: flex-start; }
+      .company-inner { grid-template-columns: 1fr; gap: 32px; }
+
+      .site-footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-catch { font-size: clamp(28px, 10vw, 40px); }
+      .detail-features { grid-template-columns: 1fr; }
+    }
+
+    /* ── Company Overview Section ── */
+    .company-section {
+      padding: clamp(64px, 8vw, 96px) clamp(24px, 6vw, 96px);
+      background: oklch(11% 0.022 248);
+      border-top: 1px solid oklch(100% 0 0 / 8%);
+    }
+    .company-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .company-left { padding-top: 4px; }
+    .company-section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      color: oklch(73% 0.19 52);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .company-name {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(18px, 2.2vw, 24px);
+      color: oklch(96% 0.008 248);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .company-legal {
+      font-size: 12px;
+      color: oklch(55% 0.012 248);
+      letter-spacing: 0.04em;
+    }
+    .company-table { width: 100%; border-collapse: collapse; }
+    .company-table tr { border-bottom: 1px solid oklch(100% 0 0 / 6%); }
+    .company-table tr:first-child { border-top: 1px solid oklch(100% 0 0 / 6%); }
+    .company-table th {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: oklch(73% 0.19 52);
+      text-transform: uppercase;
+      padding: 15px 0;
+      width: 80px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .company-table td {
+      font-size: 13px;
+      color: oklch(82% 0.01 248);
+      padding: 15px 0;
+      letter-spacing: 0.04em;
+      line-height: 1.7;
+    }
+
+    /* ── Back to Top ── */
+    .back-to-top {
+      position: fixed;
+      bottom: 90px; right: 22px;
+      z-index: 90;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(73% 0.19 52 / 35%);
+      color: oklch(73% 0.19 52);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s, background 0.2s, border-color 0.2s;
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: oklch(73% 0.19 52 / 12%); border-color: oklch(73% 0.19 52 / 70%); }
+
+    /* ── Print / no-JS fallback ── */
+    @media print {
+      .fade-up { opacity: 1 !important; transform: none !important; }
+    }
+
+    /* ── Chatbot widget brand override ── */
+    #spinel-widget-btn { background: #f97316 !important; box-shadow: 0 4px 20px rgba(249,115,22,0.35) !important; }
+    #spinel-widget-btn:hover { box-shadow: 0 6px 28px rgba(249,115,22,0.5) !important; }
+    #spinel-chat-window { background: #111827 !important; border: 1px solid rgba(249,115,22,0.2) !important; }
+    #spinel-chat-header { background: #0f1623 !important; border-bottom: 1px solid rgba(249,115,22,0.25) !important; }
+    .spinel-msg.user { background: #f97316 !important; }
+    .spinel-msg.bot { background: #1a2030 !important; color: #e2e8f0 !important; }
+    #spinel-messages { background: #111827 !important; }
+    #spinel-input-area { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.15) !important; }
+    #spinel-input { background: #1a2030 !important; color: #e2e8f0 !important; border: 1px solid rgba(249,115,22,0.25) !important; }
+    #spinel-input::placeholder { color: rgba(226,232,240,0.4) !important; }
+    #spinel-input:focus { border-color: #f97316 !important; }
+    #spinel-send { background: #f97316 !important; }
+    #spinel-send:hover { opacity: 0.9 !important; }
+    #spinel-credit { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.1) !important; }
+    #spinel-credit, #spinel-credit a { color: rgba(226,232,240,0.4) !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header" id="site-header">
+    <a href="#" class="logo">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <polygon points="11,2 20,9 11,20 2,9" fill="none" stroke="oklch(73% 0.19 52)" stroke-width="1.8"/>
+        <line x1="11" y1="2" x2="11" y2="20" stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+        <line x1="2"  y1="9" x2="20" y2="9"  stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+      </svg>
+      SPINEL LAB
+    </a>
+    <nav class="nav-links" aria-label="メインナビゲーション">
+      <a href="#" class="nav-link">TOP</a>
+      <a href="#services" class="nav-link">サービス</a>
+      <a href="pricing" class="nav-link">料金</a>
+      <a href="#contact" class="nav-link">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero" aria-label="ファーストビュー">
+
+    <!-- Dot grid background -->
+    <div class="hero-dot-grid" aria-hidden="true"></div>
+
+    <!-- Glow effects -->
+    <div class="hero-glow-amber" aria-hidden="true"></div>
+    <div class="hero-glow-teal" aria-hidden="true"></div>
+
+    <!-- Crystal watermark -->
+    <svg class="hero-crystal" viewBox="0 0 400 520" fill="none" aria-hidden="true">
+      <polygon points="200,20 380,170 200,500 20,170" stroke="oklch(96% 0.008 248)" stroke-width="2" fill="none"/>
+      <polygon points="200,20 380,170 200,300 20,170" stroke="oklch(96% 0.008 248)" stroke-width="1.2" fill="none"/>
+      <line x1="200" y1="20"  x2="200" y2="500" stroke="oklch(96% 0.008 248)" stroke-width="1"/>
+      <line x1="20"  y1="170" x2="380" y2="170" stroke="oklch(96% 0.008 248)" stroke-width="1"/>
+      <line x1="200" y1="300" x2="380" y2="170" stroke="oklch(96% 0.008 248)" stroke-width="0.8"/>
+      <line x1="200" y1="300" x2="20"  y2="170" stroke="oklch(96% 0.008 248)" stroke-width="0.8"/>
+    </svg>
+
+    <!-- Content -->
+    <div class="hero-inner">
+
+      <!-- Tags -->
+      <div class="hero-tags fade-up" data-delay="0">
+        <span class="hero-tag">ホームページ制作</span>
+        <span class="hero-tag">SNS運用</span>
+        <span class="hero-tag">業務自動化</span>
+        <span class="hero-tag">仕組み化</span>
+      </div>
+
+      <!-- Label row -->
+      <div class="hero-label-row fade-up" data-delay="60">
+        <div class="hero-rule"></div>
+        <span class="hero-label-text">FOR LOCAL BUSINESS</span>
+        <div class="hero-rule"></div>
+      </div>
+
+      <!-- Catchcopy -->
+      <h1 class="hero-catch fade-up" data-delay="140">その<span id="typing-word" class="typing-word"></span><br><span class="catch-auto">自動化</span>できますよ。</h1>
+
+      <!-- Sub copy -->
+      <p class="hero-sub fade-up" data-delay="240">
+        「何から始めればいいかわからない」そんな声から始まります。
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="cta-row fade-up" data-delay="360">
+        <a href="#contact" class="btn-primary">まず相談してみる →</a>
+        <a href="#services" class="btn-secondary">サービスを見る</a>
+      </div>
+
+    </div>
+
+    <!-- Bottom gradient bar -->
+    <div class="hero-bar" aria-hidden="true"></div>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint" aria-hidden="true">
+      <span>SCROLL</span>
+      <div class="scroll-hint-line"></div>
+    </div>
+
+  </section>
+
+  <!-- ── Services ── -->
+  <section id="services" class="services-section" aria-label="サービス">
+
+    <div class="section-header fade-up">
+      <div class="section-label-row">
+        <div class="section-rule"></div>
+        <span class="section-label">WHAT WE DO</span>
+        <div class="section-rule"></div>
+      </div>
+      <h2 class="section-title">できることを、整理しましょう。</h2>
+    </div>
+
+    <div class="services-grid">
+
+      <!-- Card 01 -->
+      <article class="service-card fade-up" data-delay="0">
+        <div class="card-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="2" y="5" width="24" height="18" rx="2" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="2" y1="10" x2="26" y2="10" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <circle cx="6" cy="7.5" r="1" fill="oklch(73% 0.19 52)"/>
+            <circle cx="10" cy="7.5" r="1" fill="oklch(73% 0.19 52)"/>
+            <rect x="6" y="14" width="8" height="1.5" rx="0.75" fill="oklch(73% 0.19 52)" opacity="0.5"/>
+            <rect x="6" y="17" width="12" height="1.5" rx="0.75" fill="oklch(73% 0.19 52)" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="card-header">
+          <span class="card-num" style="color: oklch(73% 0.19 52);">01</span>
+          <span class="card-title">ホームページ制作</span>
+        </div>
+        <p class="card-desc">古いサイトのリニューアル・新規制作。
+情報を整理し、集客につながるページを一緒に作ります。</p>
+        <a href="#service-web" class="card-link-row" style="border-top: 1px solid oklch(73% 0.19 52 / 15%);">
+          <div class="card-link-rule"></div>
+          <span class="card-link-text">詳しく見る →</span>
+        </a>
+      </article>
+
+      <!-- Card 02 -->
+      <article class="service-card fade-up" data-delay="120">
+        <div class="card-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <circle cx="14" cy="14" r="11" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <circle cx="14" cy="14" r="4" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="14" y1="3" x2="14" y2="10" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="14" y1="18" x2="14" y2="25" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="3" y1="14" x2="10" y2="14" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="18" y1="14" x2="25" y2="14" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="card-header">
+          <span class="card-num" style="color: oklch(73% 0.19 52);">02</span>
+          <span class="card-title">SNS運用・コンテンツ設計</span>
+        </div>
+        <p class="card-desc">投稿ネタに困らない仕組みを作り、
+無理なく続けられる運用フローに整えます。</p>
+        <a href="#service-sns" class="card-link-row" style="border-top: 1px solid oklch(73% 0.19 52 / 15%);">
+          <div class="card-link-rule"></div>
+          <span class="card-link-text">詳しく見る →</span>
+        </a>
+      </article>
+
+      <!-- Card 03 -->
+      <article class="service-card fade-up" data-delay="240">
+        <div class="card-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect x="4" y="8" width="8" height="8" rx="1.5" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <rect x="16" y="4" width="8" height="8" rx="1.5" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <rect x="16" y="16" width="8" height="8" rx="1.5" stroke="oklch(73% 0.19 52)" stroke-width="1.5"/>
+            <line x1="12" y1="12" x2="16" y2="8" stroke="oklch(73% 0.19 52)" stroke-width="1.2" opacity="0.6"/>
+            <line x1="12" y1="12" x2="16" y2="20" stroke="oklch(73% 0.19 52)" stroke-width="1.2" opacity="0.6"/>
+          </svg>
+        </div>
+        <div class="card-header">
+          <span class="card-num" style="color: oklch(73% 0.19 52);">03</span>
+          <span class="card-title">業務の仕組み化・自動化</span>
+        </div>
+        <p class="card-desc">毎日の繰り返し作業を棚卸しして、
+時間とコストを着実に削減します。</p>
+        <a href="#service-auto" class="card-link-row" style="border-top: 1px solid oklch(73% 0.19 52 / 15%);">
+          <div class="card-link-rule"></div>
+          <span class="card-link-text">詳しく見る →</span>
+        </a>
+      </article>
+
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="services-cta fade-up">
+      <p class="services-cta-note">「うちの場合はどうなる？」—— まずは気軽にご相談ください。</p>
+      <a href="#contact" class="btn-primary">無料で相談してみる →</a>
+    </div>
+
+  </section>
+
+  <!-- ── Service Detail 01: HP制作 ── -->
+  <section id="service-web" class="service-detail">
+    <div class="service-detail-inner fade-up">
+      <div class="detail-eyebrow">
+        <span class="detail-num">01</span>
+        <div class="detail-rule"></div>
+      </div>
+      <h3 class="detail-title">ホームページ制作</h3>
+      <p class="detail-desc">「とにかく見やすいページが欲しい」「古いサイトを一新したい」そんな要望から始まります。デザインから公開まで、まるごとお任せください。検索にも強く、スマホでも崩れない仕上がりを提供します。</p>
+      <div class="detail-features">
+        <div class="detail-feature">コーポレートサイト制作</div>
+        <div class="detail-feature">LP・ランディングページ</div>
+        <div class="detail-feature">既存サイトのリニューアル</div>
+        <div class="detail-feature">レスポンシブ対応</div>
+        <div class="detail-feature">SEO 基本設定込み</div>
+        <div class="detail-feature">公開後の操作サポート</div>
+      </div>
+      <div class="detail-cta">
+        <a href="#contact" class="btn-primary">このサービスを相談する →</a>
+        <a href="pricing" class="btn-secondary">料金を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Service Detail 02: SNS運用 ── -->
+  <section id="service-sns" class="service-detail service-detail--alt">
+    <div class="service-detail-inner fade-up">
+      <div class="detail-eyebrow">
+        <span class="detail-num">02</span>
+        <div class="detail-rule"></div>
+      </div>
+      <h3 class="detail-title">SNS運用・コンテンツ設計</h3>
+      <p class="detail-desc">「続けられる仕組み」を一緒に作ります。投稿ネタの枯渇、更新が止まる問題を、フローそのものから解決します。担当者が変わっても回り続ける運用体制を設計します。</p>
+      <div class="detail-features">
+        <div class="detail-feature">Instagram / X 運用</div>
+        <div class="detail-feature">LINE 公式アカウント</div>
+        <div class="detail-feature">月次コンテンツ設計</div>
+        <div class="detail-feature">投稿ネタ出しサポート</div>
+        <div class="detail-feature">月次レポート付き</div>
+        <div class="detail-feature">ハッシュタグ戦略</div>
+      </div>
+      <div class="detail-cta">
+        <a href="#contact" class="btn-primary">このサービスを相談する →</a>
+        <a href="pricing" class="btn-secondary">料金を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Service Detail 03: 業務自動化 ── -->
+  <section id="service-auto" class="service-detail">
+    <div class="service-detail-inner fade-up">
+      <div class="detail-eyebrow">
+        <span class="detail-num">03</span>
+        <div class="detail-rule"></div>
+      </div>
+      <h3 class="detail-title">業務の仕組み化・自動化</h3>
+      <p class="detail-desc">「毎日やってる作業、なんとかならない？」そこから始まります。まず棚卸しをして、やめられる作業と自動化できる作業を整理します。ツールの選定から導入・定着まで、一緒に進めます。</p>
+      <div class="detail-features">
+        <div class="detail-feature">メール自動返信</div>
+        <div class="detail-feature">Excel 集計の自動化</div>
+        <div class="detail-feature">予約通知自動化</div>
+        <div class="detail-feature">在庫・発注管理</div>
+        <div class="detail-feature">経費精算フロー</div>
+        <div class="detail-feature">シフト管理の仕組み化</div>
+      </div>
+      <div class="detail-cta">
+        <a href="#contact" class="btn-primary">このサービスを相談する →</a>
+        <a href="pricing" class="btn-secondary">料金を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Company Overview ── -->
+  <section class="company-section" id="company">
+    <div class="company-inner fade-up">
+      <div class="company-left">
+        <div class="company-section-label">Company</div>
+        <div class="company-name">Spinel Lab</div>
+        <div class="company-legal">合同会社Alnair</div>
+      </div>
+      <table class="company-table">
+        <tr>
+          <th>社名</th>
+          <td>Spinel Lab（合同会社Alnair）</td>
+        </tr>
+        <tr>
+          <th>代表</th>
+          <td>水谷勇介</td>
+        </tr>
+        <tr>
+          <th>設立</th>
+          <td>2026年4月</td>
+        </tr>
+        <tr>
+          <th>所在地</th>
+          <td>東京都小平市</td>
+        </tr>
+        <tr>
+          <th>事業内容</th>
+          <td>業務自動化・HP制作・SNS運用</td>
+        </tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer" id="contact">
+    <a href="#" class="logo">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <polygon points="11,2 20,9 11,20 2,9" fill="none" stroke="oklch(73% 0.19 52)" stroke-width="1.8"/>
+        <line x1="11" y1="2" x2="11" y2="20" stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+        <line x1="2"  y1="9" x2="20" y2="9"  stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+      </svg>
+      SPINEL LAB
+    </a>
+    <span class="footer-copy">© 2025 Spinel Lab. All rights reserved.</span>
+  </footer>
+
+  <script>
+    /* ── Header scroll effect ── */
+    const header = document.getElementById('site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    /* ── Back to Top ── */
+    const btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400), { passive: true });
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    /* ── Scroll fade-up (IntersectionObserver) ── */
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const heroFadeEls = document.querySelectorAll('.hero .fade-up');
+
+    // Hero elements trigger immediately (above fold)
+    heroFadeEls.forEach(el => {
+      const delay = parseInt(el.dataset.delay || '0', 10);
+      setTimeout(() => el.classList.add('visible'), delay + 80);
+    });
+
+    // Below-fold elements use IntersectionObserver
+    const nonHeroFadeEls = document.querySelectorAll('.services-section .fade-up, .services-cta.fade-up, .service-detail .fade-up, .company-section .fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = parseInt(entry.target.dataset.delay || '0', 10);
+          setTimeout(() => entry.target.classList.add('visible'), delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    nonHeroFadeEls.forEach(el => observer.observe(el));
+
+    /* ── Fade-up safety fallback (2.5 s) ── */
+    setTimeout(() => {
+      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+    }, 2500);
+
+    /* ── Typing animation ── */
+    const typingWords = ['メール返信', 'Excel集計', '予約管理', '在庫確認', 'SNS投稿', '経費精算', 'シフト管理'];
+    const typingEl = document.getElementById('typing-word');
+    let wIdx = 0, cIdx = 0, deleting = false;
+    function tick() {
+      const word = typingWords[wIdx];
+      if (deleting) {
+        typingEl.textContent = word.slice(0, --cIdx);
+        if (cIdx === 0) { deleting = false; wIdx = (wIdx + 1) % typingWords.length; setTimeout(tick, 320); return; }
+        setTimeout(tick, 65);
+      } else {
+        typingEl.textContent = word.slice(0, ++cIdx);
+        if (cIdx === word.length) { deleting = true; setTimeout(tick, 2000); return; }
+        setTimeout(tick, 120);
+      }
+    }
+    setTimeout(tick, 700);
+  </script>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" class="back-to-top" aria-label="トップに戻る">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M9 13V5M4.5 9.5l4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+<script src="https://chatbot-saas-blue.vercel.app/widget.js?botId=69e9ca7241825788eabc12ff" async></script>
+</body>
+</html>

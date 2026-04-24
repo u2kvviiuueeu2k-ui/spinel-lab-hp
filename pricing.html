@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>料金プラン — Spinel Lab</title>
+  <meta name="description" content="Spinel Labのモニター価格。HP制作¥30,000〜、SNS運用月¥10,000〜、お試し自動化¥5,000〜。先着3社限定。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: oklch(13% 0.025 248);
+      font-family: 'Noto Sans JP', sans-serif;
+      color: oklch(96% 0.008 248);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      height: 68px;
+      background: oklch(13% 0.025 248 / 94%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid oklch(100% 0 0 / 8%);
+    }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: oklch(96% 0.008 248);
+      text-decoration: none;
+    }
+
+    /* ── Nav ── */
+    .nav-links { display: flex; gap: 36px; }
+    .nav-link {
+      position: relative;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: oklch(88% 0.008 248);
+      opacity: 0.62;
+      text-decoration: none;
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: oklch(73% 0.19 52);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover { opacity: 1; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link.active { opacity: 1; color: oklch(73% 0.19 52); }
+    .nav-link.active::after { width: 100%; }
+
+    /* ── Page Hero ── */
+    .page-hero {
+      position: relative;
+      padding: 148px 24px 72px;
+      text-align: center;
+      overflow: hidden;
+      background: oklch(13% 0.025 248);
+    }
+    .page-dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(oklch(96% 0.008 248 / 5.5%) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .page-glow {
+      position: absolute;
+      top: -120px; right: -80px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(73% 0.19 52 / 8%) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; }
+    .section-label-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .section-rule { width: 40px; height: 1px; background: oklch(96% 0.008 248 / 16%); }
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: oklch(60% 0.015 248);
+      font-weight: 600;
+    }
+    .page-hero-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(32px, 4.5vw, 52px);
+      color: oklch(96% 0.008 248);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .page-hero-sub {
+      font-size: 14px;
+      color: oklch(60% 0.015 248);
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+    }
+    .hero-bar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, oklch(72% 0.17 178), oklch(73% 0.19 52));
+    }
+
+    /* ── Pricing Section ── */
+    .pricing-section {
+      padding: clamp(64px, 8vw, 96px) clamp(24px, 6vw, 96px);
+    }
+    .pricing-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* ── Monitor Badge ── */
+    .monitor-badge-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 44px;
+    }
+    .monitor-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: oklch(73% 0.19 52 / 10%);
+      border: 1px solid oklch(73% 0.19 52 / 40%);
+      border-radius: 100px;
+      padding: 8px 22px 8px 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: oklch(73% 0.19 52);
+      box-shadow: 0 0 28px oklch(73% 0.19 52 / 14%);
+    }
+    .badge-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: oklch(73% 0.19 52);
+      flex-shrink: 0;
+      animation: badgePulse 1.6s ease-in-out infinite;
+    }
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 0 0 0 0 oklch(73% 0.19 52 / 60%); }
+      60% { box-shadow: 0 0 0 6px oklch(73% 0.19 52 / 0%); }
+    }
+
+    /* ── Monitor Card ── */
+    .monitor-card {
+      position: relative;
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(73% 0.19 52 / 22%);
+      border-radius: 8px;
+      padding: 44px 44px 40px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .monitor-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, oklch(72% 0.17 178), oklch(73% 0.19 52));
+    }
+    .monitor-card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: oklch(60% 0.015 248);
+      margin-bottom: 32px;
+    }
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .price-item {
+      background: oklch(13% 0.025 248);
+      border: 1px solid oklch(100% 0 0 / 7%);
+      border-radius: 6px;
+      padding: 28px 24px;
+    }
+    .price-service {
+      font-size: 12px;
+      font-weight: 500;
+      color: oklch(60% 0.015 248);
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .price-main {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(28px, 3.5vw, 42px);
+      color: oklch(73% 0.19 52);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .price-main .su { font-size: 0.6em; font-weight: 500; letter-spacing: 0; }
+    .price-note {
+      font-size: 11px;
+      color: oklch(50% 0.012 248);
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+    .price-orig {
+      font-size: 12px;
+      color: oklch(50% 0.012 248);
+      text-decoration: line-through;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+    .price-off {
+      display: inline-block;
+      background: oklch(73% 0.19 52 / 15%);
+      color: oklch(73% 0.19 52);
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+
+    /* ── Trial Card ── */
+    .trial-card {
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(100% 0 0 / 8%);
+      border-radius: 8px;
+      padding: 44px;
+      margin-bottom: 64px;
+    }
+    .trial-top {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .trial-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: oklch(96% 0.008 248);
+    }
+    .trial-price {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 3vw, 36px);
+      color: oklch(73% 0.19 52);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .trial-catch {
+      font-size: 14px;
+      color: oklch(60% 0.015 248);
+      letter-spacing: 0.04em;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+    .trial-divider {
+      height: 1px;
+      background: oklch(100% 0 0 / 6%);
+      margin-bottom: 24px;
+    }
+    .trial-items { list-style: none; }
+    .trial-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 15px;
+      color: oklch(88% 0.008 248);
+      padding: 13px 0;
+      border-bottom: 1px solid oklch(100% 0 0 / 5%);
+      letter-spacing: 0.03em;
+    }
+    .trial-item:last-child { border-bottom: none; }
+    .t-rule { width: 18px; height: 1px; background: oklch(73% 0.19 52); flex-shrink: 0; }
+
+    /* ── CTA ── */
+    .pricing-cta { text-align: center; }
+    .pricing-cta-text {
+      font-size: clamp(14px, 1.6vw, 17px);
+      color: oklch(88% 0.008 248);
+      opacity: 0.82;
+      line-height: 1.9;
+      margin-bottom: 36px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 44px;
+      background: oklch(73% 0.19 52);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: oklch(13% 0.05 42);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .btn-primary:hover {
+      background: oklch(79% 0.19 52);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px oklch(73% 0.19 52 / 45%);
+    }
+    .btn-primary:active { transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 32px 52px;
+      border-top: 1px solid oklch(100% 0 0 / 8%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: oklch(11% 0.02 248);
+    }
+    .footer-copy {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      color: oklch(60% 0.015 248);
+      letter-spacing: 0.08em;
+    }
+
+    @media print { .fade-up { opacity: 1 !important; transform: none !important; } }
+
+    /* ── Back to Top ── */
+    .back-to-top {
+      position: fixed;
+      bottom: 90px; right: 22px;
+      z-index: 90;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(73% 0.19 52 / 35%);
+      color: oklch(73% 0.19 52);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s, background 0.2s, border-color 0.2s;
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: oklch(73% 0.19 52 / 12%); border-color: oklch(73% 0.19 52 / 70%); }
+
+    /* ── Chatbot widget brand override ── */
+    #spinel-widget-btn { background: #f97316 !important; box-shadow: 0 4px 20px rgba(249,115,22,0.35) !important; }
+    #spinel-widget-btn:hover { box-shadow: 0 6px 28px rgba(249,115,22,0.5) !important; }
+    #spinel-chat-window { background: #111827 !important; border: 1px solid rgba(249,115,22,0.2) !important; }
+    #spinel-chat-header { background: #0f1623 !important; border-bottom: 1px solid rgba(249,115,22,0.25) !important; }
+    .spinel-msg.user { background: #f97316 !important; }
+    .spinel-msg.bot { background: #1a2030 !important; color: #e2e8f0 !important; }
+    #spinel-messages { background: #111827 !important; }
+    #spinel-input-area { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.15) !important; }
+    #spinel-input { background: #1a2030 !important; color: #e2e8f0 !important; border: 1px solid rgba(249,115,22,0.25) !important; }
+    #spinel-input::placeholder { color: rgba(226,232,240,0.4) !important; }
+    #spinel-input:focus { border-color: #f97316 !important; }
+    #spinel-send { background: #f97316 !important; }
+    #spinel-send:hover { opacity: 0.9 !important; }
+    #spinel-credit { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.1) !important; }
+    #spinel-credit, #spinel-credit a { color: rgba(226,232,240,0.4) !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .site-header { padding: 0 24px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 110px 24px 56px; }
+      .pricing-section { padding: 52px 24px; }
+      .monitor-card, .trial-card { padding: 28px 22px; }
+      .monitor-grid { grid-template-columns: 1fr; gap: 14px; }
+      .trial-item { font-size: 14px; }
+      .site-footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+    @media (max-width: 480px) {
+      .price-main { font-size: 32px; }
+      .monitor-card, .trial-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <a href="/" class="logo">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <polygon points="11,2 20,9 11,20 2,9" fill="none" stroke="oklch(73% 0.19 52)" stroke-width="1.8"/>
+        <line x1="11" y1="2" x2="11" y2="20" stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+        <line x1="2"  y1="9" x2="20" y2="9"  stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+      </svg>
+      SPINEL LAB
+    </a>
+    <nav class="nav-links" aria-label="メインナビゲーション">
+      <a href="/" class="nav-link">TOP</a>
+      <a href="/#services" class="nav-link">サービス</a>
+      <a href="/pricing" class="nav-link active">料金</a>
+      <a href="/#contact" class="nav-link">お問い合わせ</a>
+    </nav>
+  </header>
+
+  <!-- ── Page Hero ── -->
+  <section class="page-hero" aria-label="料金ページ">
+    <div class="page-dot-grid" aria-hidden="true"></div>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="page-hero-inner">
+      <div class="section-label-row fade-up">
+        <div class="section-rule"></div>
+        <span class="section-label">PRICING</span>
+        <div class="section-rule"></div>
+      </div>
+      <h1 class="page-hero-title fade-up" data-delay="80">料金プラン</h1>
+      <p class="page-hero-sub fade-up" data-delay="160">まず試して、効果を実感してください。</p>
+    </div>
+    <div class="hero-bar" aria-hidden="true"></div>
+  </section>
+
+  <!-- ── Pricing Content ── -->
+  <main class="pricing-section">
+    <div class="pricing-inner">
+
+      <!-- 先着3社限定バッジ -->
+      <div class="monitor-badge-wrap fade-up" data-delay="60">
+        <div class="monitor-badge">
+          <span class="badge-dot"></span>
+          先着3社限定 — モニター募集中
+        </div>
+      </div>
+
+      <!-- モニター価格カード -->
+      <div class="monitor-card fade-up" data-delay="120">
+        <div class="monitor-card-label">MONITOR PRICE</div>
+        <div class="monitor-grid">
+
+          <!-- HP制作 -->
+          <div class="price-item">
+            <div class="price-service">ホームページ制作</div>
+            <div class="price-main">¥30,000<span class="su">〜</span></div>
+            <div class="price-note">初回モニター限定価格</div>
+            <div class="price-orig">通常 ¥100,000〜</div>
+            <div class="price-off">▼ 70% OFF</div>
+          </div>
+
+          <!-- SNS運用 -->
+          <div class="price-item">
+            <div class="price-service">SNS運用</div>
+            <div class="price-main">¥10,000<span class="su">/月〜</span></div>
+            <div class="price-note">月額・初回モニター限定</div>
+            <div class="price-orig">通常 ¥30,000/月〜</div>
+            <div class="price-off">▼ 67% OFF</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- お試し自動化カード -->
+      <div class="trial-card fade-up" data-delay="200">
+        <div class="trial-top">
+          <div class="trial-title">お試し自動化</div>
+          <div class="trial-price">¥5,000<span style="font-size:0.6em;font-weight:500">/件〜</span></div>
+        </div>
+        <p class="trial-catch">こんな作業、自動化できますよ。</p>
+        <div class="trial-divider"></div>
+        <ul class="trial-items">
+          <li class="trial-item">
+            <div class="t-rule"></div>
+            メール自動返信
+          </li>
+          <li class="trial-item">
+            <div class="t-rule"></div>
+            Excel → 自動集計レポート
+          </li>
+          <li class="trial-item">
+            <div class="t-rule"></div>
+            予約通知自動化
+          </li>
+        </ul>
+      </div>
+
+      <!-- CTA -->
+      <div class="pricing-cta fade-up" data-delay="280">
+        <p class="pricing-cta-text">
+          他にもあなたの悩み、自動化できるかもしれません。<br>
+          まずは相談ください。
+        </p>
+        <a href="/#contact" class="btn-primary">相談無料 →</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer" id="contact">
+    <a href="/" class="logo">
+      <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <polygon points="11,2 20,9 11,20 2,9" fill="none" stroke="oklch(73% 0.19 52)" stroke-width="1.8"/>
+        <line x1="11" y1="2" x2="11" y2="20" stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+        <line x1="2"  y1="9" x2="20" y2="9"  stroke="oklch(73% 0.19 52)" stroke-width="1" opacity="0.45"/>
+      </svg>
+      SPINEL LAB
+    </a>
+    <span class="footer-copy">© 2025 Spinel Lab. All rights reserved.</span>
+  </footer>
+
+  <script>
+    /* ── Scroll fade-up ── */
+    document.querySelectorAll('.fade-up').forEach(el => {
+      const delay = parseInt(el.dataset.delay || '0', 10);
+      setTimeout(() => el.classList.add('visible'), delay + 100);
+    });
+    setTimeout(() => {
+      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+    }, 2500);
+  </script>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" class="back-to-top" aria-label="トップに戻る">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M9 13V5M4.5 9.5l4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script src="https://chatbot-saas-blue.vercel.app/widget.js?botId=69e9ca7241825788eabc12ff" async></script>
+  <script>
+    const btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400), { passive: true });
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+</body>
+</html>
