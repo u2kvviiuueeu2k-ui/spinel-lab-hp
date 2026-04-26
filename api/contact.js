@@ -1,7 +1,5 @@
 const { Resend } = require('resend');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -21,11 +19,13 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'メールアドレスの形式が正しくありません。' });
   }
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'Spinel Lab <onboarding@resend.dev>',
       to: 'alnair.llc.info@gmail.com',
-      reply_to: email,
+      replyTo: email,
       subject: `【お問い合わせ】${name} 様より`,
       html: `
         <div style="font-family:'Helvetica Neue',Arial,sans-serif;max-width:600px;margin:0 auto;background:#f4f5f7;padding:32px;">
@@ -51,9 +51,14 @@ module.exports = async function handler(req, res) {
       `,
     });
 
+    if (error) {
+      console.error('Resend error:', error);
+      return res.status(500).json({ error: 'メールの送信に失敗しました。時間をおいて再度お試しください。' });
+    }
+
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Resend error:', err);
+    console.error('Resend exception:', err);
     return res.status(500).json({ error: 'メールの送信に失敗しました。時間をおいて再度お試しください。' });
   }
 };
