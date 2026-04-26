@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>お問い合わせ — Spinel Lab</title>
+  <meta name="description" content="Spinel Labへのお問い合わせ。メールフォームまたはLINEからお気軽にどうぞ。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: oklch(13% 0.025 248);
+      font-family: 'Noto Sans JP', sans-serif;
+      color: oklch(96% 0.008 248);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Fade-up ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      height: 68px;
+      background: oklch(13% 0.025 248 / 94%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid oklch(100% 0 0 / 8%);
+    }
+    .logo { display: flex; align-items: center; text-decoration: none; }
+    .logo-img { height: 28px; width: auto; display: block; }
+
+    /* ── Nav ── */
+    .nav-links { display: flex; gap: 36px; }
+    .nav-link {
+      position: relative;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: oklch(88% 0.008 248);
+      opacity: 0.62;
+      text-decoration: none;
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: oklch(73% 0.19 52);
+      transition: width 0.25s ease;
+    }
+    .nav-link:hover { opacity: 1; }
+    .nav-link:hover::after { width: 100%; }
+    .nav-link.active { opacity: 1; color: oklch(73% 0.19 52); }
+    .nav-link.active::after { width: 100%; }
+
+    /* ── Page Hero ── */
+    .page-hero {
+      position: relative;
+      padding: 148px 24px 72px;
+      text-align: center;
+      overflow: hidden;
+      background: oklch(13% 0.025 248);
+    }
+    .page-dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(oklch(96% 0.008 248 / 5.5%) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+    .page-glow {
+      position: absolute;
+      top: -120px; right: -80px;
+      width: 480px; height: 480px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(73% 0.19 52 / 8%) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .page-glow-teal {
+      position: absolute;
+      bottom: -100px; left: -60px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, oklch(72% 0.17 178 / 6%) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .page-hero-inner { position: relative; z-index: 1; }
+    .section-label-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .section-rule { width: 40px; height: 1px; background: oklch(96% 0.008 248 / 16%); }
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: oklch(60% 0.015 248);
+      font-weight: 600;
+    }
+    .page-hero-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: clamp(32px, 4.5vw, 52px);
+      color: oklch(96% 0.008 248);
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .page-hero-sub {
+      font-size: 14px;
+      color: oklch(60% 0.015 248);
+      line-height: 1.8;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Contact Section ── */
+    .contact-section {
+      padding: clamp(48px, 6vw, 72px) clamp(24px, 6vw, 96px) clamp(72px, 10vw, 120px);
+      background: oklch(13% 0.025 248);
+    }
+    .contact-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── Form ── */
+    .contact-form-wrap {
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(100% 0 0 / 8%);
+      border-radius: 6px;
+      padding: 40px 36px;
+    }
+    .form-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: oklch(73% 0.19 52);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .form-group { margin-bottom: 22px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: oklch(75% 0.012 248);
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    .form-label .required {
+      color: oklch(73% 0.19 52);
+      margin-left: 4px;
+      font-size: 10px;
+    }
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      background: oklch(13% 0.025 248);
+      border: 1px solid oklch(100% 0 0 / 15%);
+      border-radius: 4px;
+      padding: 13px 16px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      color: oklch(92% 0.008 248);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.03em;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: oklch(45% 0.01 248);
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: oklch(73% 0.19 52 / 60%);
+      box-shadow: 0 0 0 3px oklch(73% 0.19 52 / 8%);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 148px;
+      line-height: 1.8;
+    }
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 40px;
+      background: oklch(73% 0.19 52);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: oklch(13% 0.05 42);
+      letter-spacing: 0.06em;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: oklch(79% 0.19 52);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px oklch(73% 0.19 52 / 40%);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Form feedback */
+    .form-msg {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+    .form-msg.success {
+      display: block;
+      background: oklch(72% 0.17 178 / 10%);
+      border: 1px solid oklch(72% 0.17 178 / 30%);
+      color: oklch(75% 0.12 178);
+    }
+    .form-msg.error {
+      display: block;
+      background: oklch(60% 0.18 20 / 10%);
+      border: 1px solid oklch(60% 0.18 20 / 30%);
+      color: oklch(70% 0.15 20);
+    }
+
+    /* ── LINE Card ── */
+    .line-card {
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(100% 0 0 / 8%);
+      border-radius: 6px;
+      padding: 36px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      position: sticky;
+      top: 88px;
+    }
+    .line-card-eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: oklch(55% 0.012 248);
+      text-transform: uppercase;
+    }
+    .line-card-icon {
+      width: 56px;
+      height: 56px;
+      background: #06C755;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .line-card-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: oklch(96% 0.008 248);
+      line-height: 1.5;
+    }
+    .line-card-desc {
+      font-size: 13px;
+      color: oklch(60% 0.015 248);
+      line-height: 1.85;
+      letter-spacing: 0.03em;
+    }
+    .line-divider {
+      width: 40px;
+      height: 1px;
+      background: oklch(100% 0 0 / 10%);
+    }
+    .btn-line {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 28px;
+      background: #06C755;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .btn-line:hover {
+      background: #05b34b;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(6, 199, 85, 0.35);
+    }
+    .line-note {
+      font-size: 11px;
+      color: oklch(45% 0.01 248);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 32px 52px;
+      border-top: 1px solid oklch(100% 0 0 / 8%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: oklch(11% 0.02 248);
+    }
+    .footer-copy {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      color: oklch(60% 0.015 248);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Back to Top ── */
+    .back-to-top {
+      position: fixed;
+      bottom: 90px; right: 22px;
+      z-index: 90;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: oklch(17% 0.03 248);
+      border: 1px solid oklch(73% 0.19 52 / 35%);
+      color: oklch(73% 0.19 52);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s, background 0.2s, border-color 0.2s;
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .back-to-top:hover { background: oklch(73% 0.19 52 / 12%); border-color: oklch(73% 0.19 52 / 70%); }
+
+    /* ── Chatbot widget brand override ── */
+    #spinel-widget-btn { background: #f97316 !important; box-shadow: 0 4px 20px rgba(249,115,22,0.35) !important; }
+    #spinel-widget-btn:hover { box-shadow: 0 6px 28px rgba(249,115,22,0.5) !important; }
+    #spinel-chat-window { background: #111827 !important; border: 1px solid rgba(249,115,22,0.2) !important; }
+    #spinel-chat-header { background: #0f1623 !important; border-bottom: 1px solid rgba(249,115,22,0.25) !important; }
+    .spinel-msg.user { background: #f97316 !important; }
+    .spinel-msg.bot { background: #1a2030 !important; color: #e2e8f0 !important; }
+    #spinel-messages { background: #111827 !important; }
+    #spinel-input-area { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.15) !important; }
+    #spinel-input { background: #1a2030 !important; color: #e2e8f0 !important; border: 1px solid rgba(249,115,22,0.25) !important; }
+    #spinel-input::placeholder { color: rgba(226,232,240,0.4) !important; }
+    #spinel-input:focus { border-color: #f97316 !important; }
+    #spinel-send { background: #f97316 !important; }
+    #spinel-send:hover { opacity: 0.9 !important; }
+    #spinel-credit { background: #0f1623 !important; border-top: 1px solid rgba(249,115,22,0.1) !important; }
+    #spinel-credit, #spinel-credit a { color: rgba(226,232,240,0.4) !important; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .contact-inner {
+        grid-template-columns: 1fr;
+      }
+      .line-card {
+        position: static;
+        flex-direction: row;
+        text-align: left;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .line-card-eyebrow { width: 100%; }
+      .btn-line { width: auto; flex: 1 1 200px; }
+    }
+    @media (max-width: 768px) {
+      .site-header { padding: 0 24px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 110px 24px 56px; }
+      .contact-section { padding: 48px 24px 72px; }
+      .contact-form-wrap { padding: 28px 22px; }
+      .line-card { flex-direction: column; text-align: center; }
+      .btn-line { width: 100%; }
+      .site-footer { padding: 24px; flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <a href="/" class="logo">
+      <img src="/spinel-logo.png" alt="Spinel Lab" class="logo-img" />
+    </a>
+    <nav class="nav-links" aria-label="メインナビゲーション">
+      <a href="/" class="nav-link">TOP</a>
+      <a href="/#services" class="nav-link">サービス</a>
+      <a href="/pricing" class="nav-link">料金</a>
+      <a href="/contact" class="nav-link active">CONTACT</a>
+    </nav>
+  </header>
+
+  <!-- ── Page Hero ── -->
+  <section class="page-hero" aria-label="お問い合わせページ">
+    <div class="page-dot-grid" aria-hidden="true"></div>
+    <div class="page-glow" aria-hidden="true"></div>
+    <div class="page-glow-teal" aria-hidden="true"></div>
+    <div class="page-hero-inner">
+      <div class="section-label-row fade-up">
+        <div class="section-rule"></div>
+        <span class="section-label">CONTACT US</span>
+        <div class="section-rule"></div>
+      </div>
+      <h1 class="page-hero-title fade-up" data-delay="80">お問い合わせ</h1>
+      <p class="page-hero-sub fade-up" data-delay="160">気になることがあれば、なんでもどうぞ。</p>
+    </div>
+  </section>
+
+  <!-- ── Contact Main ── -->
+  <main>
+    <section class="contact-section" aria-label="お問い合わせフォーム">
+      <div class="contact-inner">
+
+        <!-- Form -->
+        <div class="contact-form-wrap fade-up">
+          <div class="form-title">SEND A MESSAGE</div>
+          <form id="contact-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="name">お名前<span class="required">*</span></label>
+              <input class="form-input" type="text" id="name" name="name" placeholder="山田 太郎" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">メールアドレス<span class="required">*</span></label>
+              <input class="form-input" type="email" id="email" name="email" placeholder="example@email.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">お問い合わせ内容<span class="required">*</span></label>
+              <textarea class="form-textarea" id="message" name="message" placeholder="どんな些細なことでもお気軽に。" required></textarea>
+            </div>
+            <button class="btn-submit" type="submit" id="submit-btn">送信する →</button>
+            <div class="form-msg" id="form-msg"></div>
+          </form>
+        </div>
+
+        <!-- LINE Card -->
+        <div class="line-card fade-up" data-delay="120" aria-label="LINEで相談">
+          <div class="line-card-eyebrow">OR REACH US ON</div>
+          <div class="line-card-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M28 13.6C28 8.29 22.627 4 16 4S4 8.29 4 13.6c0 4.75 4.213 8.73 9.906 9.48.386.083.912.255 1.045.585.12.3.079.77.038 1.073l-.168 1.013c-.052.3-.237 1.175 1.03.64C17.13 25.61 23.1 21.93 25.62 18.87 27.41 16.92 28 15.33 28 13.6z" fill="white"/>
+              <path d="M13.1 11.5H12a.4.4 0 00-.4.4v4.6c0 .22.18.4.4.4h1.1c.22 0 .4-.18.4-.4v-4.6c0-.22-.18-.4-.4-.4zM20 11.5h-1.1a.4.4 0 00-.4.4v2.73l-2.11-2.95a.4.4 0 00-.32-.18H15a.4.4 0 00-.4.4v4.6c0 .22.18.4.4.4h1.1c.22 0 .4-.18.4-.4v-2.73l2.12 2.95c.07.1.18.18.31.18H20c.22 0 .4-.18.4-.4V11.9c0-.22-.18-.4-.4-.4zM10.9 15.1H9.4V11.9c0-.22-.18-.4-.4-.4H7.9a.4.4 0 00-.4.4v4.6c0 .11.04.21.12.28.07.08.17.12.28.12h2.9c.22 0 .4-.18.4-.4v-1.4c0-.22-.18-.4-.4-.4h.1zM24.5 12.9c.22 0 .4-.18.4-.4v-1c0-.22-.18-.4-.4-.4h-2.9a.4.4 0 00-.28.12.4.4 0 00-.12.28v4.6c0 .11.04.21.12.28.07.08.17.12.28.12h2.9c.22 0 .4-.18.4-.4v-1c0-.22-.18-.4-.4-.4h-1.5v-.8h1.5c.22 0 .4-.18.4-.4v-1c0-.22-.18-.4-.4-.4h-1.5v-.8h1.5z" fill="#06C755"/>
+            </svg>
+          </div>
+          <div class="line-card-title">LINEで<br>気軽に相談する</div>
+          <div class="line-divider"></div>
+          <div class="line-card-desc">フォームより手軽に。<br>まず話を聞いてほしい方はこちら。</div>
+          <a href="https://lin.ee/xmtgoN2" class="btn-line" target="_blank" rel="noopener noreferrer">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+              <path d="M28 13.6C28 8.29 22.627 4 16 4S4 8.29 4 13.6c0 4.75 4.213 8.73 9.906 9.48.386.083.912.255 1.045.585.12.3.079.77.038 1.073l-.168 1.013c-.052.3-.237 1.175 1.03.64C17.13 25.61 23.1 21.93 25.62 18.87 27.41 16.92 28 15.33 28 13.6z" fill="white"/>
+            </svg>
+            友だち追加して相談する
+          </a>
+          <div class="line-note">無料・返信を気にせず送れます</div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <a href="/" class="logo">
+      <img src="/spinel-logo.png" alt="Spinel Lab" class="logo-img" />
+    </a>
+    <span class="footer-copy">© 2025 Spinel Lab. All rights reserved.</span>
+  </footer>
+
+  <!-- Back to Top -->
+  <button id="back-to-top" class="back-to-top" aria-label="トップに戻る">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <path d="M9 13V5M4.5 9.5l4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script>
+    /* ── Fade-up ── */
+    document.querySelectorAll('.fade-up').forEach(el => {
+      const delay = parseInt(el.dataset.delay || '0', 10);
+      setTimeout(() => el.classList.add('visible'), delay + 100);
+    });
+    setTimeout(() => {
+      document.querySelectorAll('.fade-up').forEach(el => el.classList.add('visible'));
+    }, 2500);
+
+    /* ── Back to Top ── */
+    const btt = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 400), { passive: true });
+    btt.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    /* ── Form submission ── */
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const formMsg = document.getElementById('form-msg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        formMsg.className = 'form-msg error';
+        formMsg.textContent = 'すべての項目を入力してください。';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中…';
+      formMsg.className = 'form-msg';
+      formMsg.textContent = '';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message }),
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          formMsg.className = 'form-msg success';
+          formMsg.textContent = '送信が完了しました。近日中にご連絡いたします。';
+          form.reset();
+        } else {
+          throw new Error(data.error || '送信に失敗しました。');
+        }
+      } catch (err) {
+        formMsg.className = 'form-msg error';
+        formMsg.textContent = err.message || '送信に失敗しました。時間をおいて再度お試しください。';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '送信する →';
+      }
+    });
+  </script>
+
+  <script src="https://chatbot-saas-blue.vercel.app/widget.js?botId=69e9ca7241825788eabc12ff" async></script>
+</body>
+</html>

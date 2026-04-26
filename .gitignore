@@ -3,3 +3,6 @@ screenshots2/
 screenshots3/
 screenshot*.py
 .vercel/
+node_modules/
+.env.local
+.env*.local
